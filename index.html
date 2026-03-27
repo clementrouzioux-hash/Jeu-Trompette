@@ -35,9 +35,16 @@ button.active { background: orange; }
     max-width: 200px;
     height: auto;
     display: block;
-    margin: 20px auto;
+    margin: 0 auto 10px auto;
     border: 1px solid #ccc;
     background: #fff;
+}
+#note {
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 #modeSelection, #gameContainer, #scoresScreen {
     margin-top: 30px;
@@ -55,11 +62,25 @@ button.active { background: orange; }
     padding: 10px;
     width: 300px;
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
 }
 .score-item.new-score {
     background: #ffd700;
-    font-weight: bold;
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+.score-line {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+}
+.score-date {
+    font-size: 0.83em;
+    color: #444;
+    font-weight: 400;
 }
 .score-item strong {
     color: #111;
@@ -112,6 +133,21 @@ const SUPABASE_KEY = "sb_publishable_36JS5UkCH9_qDS_uKdtgZQ_xpdKo1O2";
 const supabaseClient = (typeof window !== 'undefined' && window.supabase)
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
     : null;
+
+// ----------------- Favicon avec emoji -----------------
+(function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    ctx.font = '24px serif';
+    ctx.fillText('🎺', 4, 24);
+    const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.href = dataURL;
+    document.head.appendChild(link);
+})();
 
 // ----------------- Formatage des notes -----------------
 function formatNoteLabel(noteKey) {
@@ -205,9 +241,11 @@ function saveScoreLocal(modeType, scoreValue) {
 
 async function saveScore(modeType, scoreValue) {
     saveScoreLocal(modeType, scoreValue);
+    const localEntry = { mode: modeType, score: scoreValue, date: new Date().toLocaleString('fr-FR') };
+
     if (!supabaseClient) {
         console.warn('Supabase client not available, score enregistré en local uniquement.');
-        return null;
+        return localEntry;
     }
 
     console.log(`Envoi score supabase (${modeType}):`, scoreValue);
@@ -217,10 +255,20 @@ async function saveScore(modeType, scoreValue) {
 
     if (error) {
         console.error('Supabase saveScore error :', error);
-        return null;
+        return localEntry;
     }
+
     console.log('Supabase answer saveScore :', data);
-    return data;
+
+    if (data && data.length > 0) {
+        return {
+            mode: modeType,
+            score: scoreValue,
+            date: data[0].created_at ? new Date(data[0].created_at).toLocaleString('fr-FR') : localEntry.date
+        };
+    }
+
+    return localEntry;
 }
 
 async function getTopScores(modeType) {
@@ -263,7 +311,7 @@ async function getTopScores(modeType) {
     return topScores;
 }
 
-async function showEndScreen(currentScore) {
+async function showEndScreen(currentScore, currentScoreEntry = null) {
     document.getElementById("gameContainer").style.display = "none";
     document.getElementById("scoresScreen").style.display = "block";
     
@@ -278,11 +326,21 @@ async function showEndScreen(currentScore) {
         let isNewScoreFound = false;
         topScores.forEach((s, i) => {
             let scoreText = mode === 'fixed' ? `${s.score}s` : `${s.score} notes`;
-            let isNewScore = !isNewScoreFound && s.score === currentScore;
+            let isNewScore = false;
+            if (currentScoreEntry) {
+                isNewScore = (s.score === currentScoreEntry.score && s.date === currentScoreEntry.date);
+            } else {
+                isNewScore = !isNewScoreFound && s.score === currentScore;
+            }
             let classAttr = isNewScore ? ' class="score-item new-score"' : ' class="score-item"';
-            html += `<div${classAttr}><strong>#${i+1}: ${scoreText}</strong> - ${s.date}</div>`;
+            html += `<div${classAttr}><div class="score-line"><span>#${i+1}</span><span>${scoreText}</span></div><div class="score-date">${s.date}</div></div>`;
             if(isNewScore) isNewScoreFound = true;
         });
+
+        if (!isNewScoreFound && currentScoreEntry) {
+            let scoreText = mode === 'fixed' ? `${currentScoreEntry.score}s` : `${currentScoreEntry.score} notes`;
+            html += `<div class="score-item new-score"><div class="score-line"><span>Votre score</span><span>${scoreText}</span></div><div class="score-date">${currentScoreEntry.date}</div></div>`;
+        }
     }
     document.getElementById("scoresList").innerHTML = html;
 }
@@ -310,13 +368,13 @@ function startMode(selectedMode){
 
 // --------- Timer ---------
 function startTimer(){
-    timerInterval = setInterval(()=>{
+    timerInterval = setInterval(async ()=>{
         timeLeft--;
         document.getElementById("timer").innerText = `Temps: ${timeLeft}s`;
         if(timeLeft<=0){
             clearInterval(timerInterval);
-            saveScore('chrono', score);
-            showEndScreen(score);
+            const saved = await saveScore('chrono', score);
+            await showEndScreen(score, saved);
         }
     },1000);
 }
@@ -328,8 +386,8 @@ async function newNote(){
     if(mode==="fixed"){
         if(notesDone>=totalNotes){
             let elapsedTime = Math.round((Date.now() - startTime) / 1000);
-            saveScore('fixed', elapsedTime);
-            showEndScreen(elapsedTime);
+            const saved = await saveScore('fixed', elapsedTime);
+            await showEndScreen(elapsedTime, saved);
             return;
         }
         notesDone++;
