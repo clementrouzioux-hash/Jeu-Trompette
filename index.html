@@ -90,6 +90,49 @@ button.active { background: orange; }
     overflow-y: auto;
     margin: 20px auto;
 }
+
+/* Responsive design pour mobile */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5em;
+        margin-top: 10px;
+    }
+    button {
+        width: 80px;
+        height: 40px;
+        font-size: 16px;
+        margin: 5px;
+    }
+    .buttons {
+        flex-direction: column;
+        gap: 10px;
+        margin: 15px;
+    }
+    #note {
+        height: 200px;
+    }
+    #note img {
+        max-width: 150px;
+    }
+    #remaining, #timer, #result {
+        font-size: 18px;
+        margin: 5px;
+    }
+    .score-item {
+        width: 90%;
+        padding: 8px;
+    }
+    .score-line {
+        font-size: 0.9em;
+    }
+    .score-date {
+        font-size: 0.75em;
+    }
+    #scoresList {
+        max-height: 300px;
+        margin: 15px auto;
+    }
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 </head>
