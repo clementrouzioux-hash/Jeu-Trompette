@@ -15,28 +15,29 @@ body {
     box-sizing: border-box;
 }
 h1 {
-    margin-top: 20px;
+    font-size: 1.5em;
+    margin-top: 10px;
 }
 button {
-    width: 120px;
-    height: 50px;
-    font-size: 18px;
+    width: 80px;
+    height: 40px;
+    font-size: 14px;
     border-radius: 10px;
     border: none;
     background: #444;
     color: white;
-    margin: 10px;
+    margin: 5px;
 }
 button.active { background: orange; }
 .buttons {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin: 20px;
+    gap: 10px;
+    margin: 15px;
 }
 #note img {
     width: 100%;
-    max-width: 200px;
+    max-width: 150px;
     height: auto;
     display: block;
     border: 1px solid #ccc;
@@ -48,10 +49,10 @@ button.active { background: orange; }
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 280px;
+    min-height: 200px;
 }
 #noteText {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     min-height: 1.6em;
     line-height: 1.6em;
@@ -63,8 +64,8 @@ button.active { background: orange; }
     margin-top: 30px;
 }
 #remaining, #timer, #result {
-    font-size: 20px;
-    margin: 10px;
+    font-size: 18px;
+    margin: 5px;
 }
 #scoresScreen {
     display: none;
@@ -72,8 +73,8 @@ button.active { background: orange; }
 .score-item {
     background: #f0f0f0;
     margin: 10px auto;
-    padding: 10px;
-    width: 300px;
+    padding: 8px;
+    width: 90%;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -89,9 +90,10 @@ button.active { background: orange; }
     display: flex;
     justify-content: space-between;
     font-weight: 700;
+    font-size: 0.9em;
 }
 .score-date {
-    font-size: 0.83em;
+    font-size: 0.75em;
     color: #444;
     font-weight: 400;
 }
@@ -101,75 +103,20 @@ button.active { background: orange; }
 #currentScore {
     background: #ffd700;
     margin: 10px auto;
-    padding: 10px;
-    width: 300px;
+    padding: 15px;
+    width: 90%;
     border-radius: 5px;
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
 }
 #currentScoreValue {
-    font-size: 36px;
+    font-size: 28px;
     font-weight: bold;
     color: #111;
 }
 #scoresList {
-    max-height: 400px;
+    max-height: 300px;
     overflow-y: auto;
-    margin: 20px auto;
-}
-
-/* Responsive design pour mobile */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 1.5em;
-        margin-top: 10px;
-    }
-    button {
-        width: 70px;
-        height: 40px;
-        font-size: 14px;
-        margin: 5px;
-    }
-    .buttons {
-        flex-direction: row;
-        gap: 10px;
-        margin: 15px;
-    }
-    #note {
-        min-height: 200px;
-    }
-    #note img {
-        max-width: 150px;
-    }
-    #noteText {
-        font-size: 18px;
-        min-height: 1.6em;
-        line-height: 1.6em;
-    }
-    #remaining, #timer, #result {
-        font-size: 18px;
-        margin: 5px;
-    }
-    #currentScore {
-        width: 90%;
-        padding: 15px;
-    }
-    #currentScoreValue {
-        font-size: 28px;
-    }
-    .score-item {
-        width: 90%;
-        padding: 8px;
-    }
-    .score-line {
-        font-size: 0.9em;
-    }
-    .score-date {
-        font-size: 0.75em;
-    }
-    #scoresList {
-        max-height: 300px;
-        margin: 15px auto;
-    }
+    margin: 15px auto;
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
@@ -413,7 +360,7 @@ async function showEndScreen(currentScore, currentScoreEntry = null) {
     let title = mode === 'fixed' ? 'Meilleurs temps pour 20 notes' : 'Meilleur nombre de notes en 1 min';
     document.getElementById("scoreTitle").innerText = title;
     
-    let currentScoreText = mode === 'fixed' ? `${currentScore}` : `${currentScore}`;
+    let currentScoreText = mode === 'fixed' ? `${currentScore} sec` : `${currentScore}`;
     document.getElementById("currentScoreValue").innerText = currentScoreText;
     
     let html = '';
@@ -422,7 +369,7 @@ async function showEndScreen(currentScore, currentScoreEntry = null) {
     } else {
         let isNewScoreFound = false;
         topScores.forEach((s, i) => {
-            let scoreText = mode === 'fixed' ? `${s.score}` : `${s.score} notes`;
+            let scoreText = mode === 'fixed' ? `${s.score} sec` : `${s.score} notes`;
             let isNewScore = false;
             if (currentScoreEntry) {
                 isNewScore = (s.score === currentScoreEntry.score && s.date === currentScoreEntry.date);
