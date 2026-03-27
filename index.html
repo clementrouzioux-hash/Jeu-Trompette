@@ -98,6 +98,19 @@ button.active { background: orange; }
 .score-item strong {
     color: #111;
 }
+#currentScore {
+    background: #ffd700;
+    margin: 10px auto;
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+#currentScoreValue {
+    font-size: 36px;
+    font-weight: bold;
+    color: #111;
+}
 #scoresList {
     max-height: 400px;
     overflow-y: auto;
@@ -135,6 +148,13 @@ button.active { background: orange; }
     #remaining, #timer, #result {
         font-size: 18px;
         margin: 5px;
+    }
+    #currentScore {
+        width: 90%;
+        padding: 15px;
+    }
+    #currentScoreValue {
+        font-size: 28px;
     }
     .score-item {
         width: 90%;
@@ -183,6 +203,9 @@ button.active { background: orange; }
 <!-- Écran des scores -->
 <div id="scoresScreen" style="display:none;">
     <h2 id="scoreTitle">Résultats</h2>
+    <div id="currentScore">
+        <div id="currentScoreValue">-</div>
+    </div>
     <div id="scoresList"></div>
     <div class="buttons">
         <button onclick="replayGame()">Rejouer</button>
@@ -390,13 +413,16 @@ async function showEndScreen(currentScore, currentScoreEntry = null) {
     let title = mode === 'fixed' ? 'Meilleurs temps pour 20 notes' : 'Meilleur nombre de notes en 1 min';
     document.getElementById("scoreTitle").innerText = title;
     
+    let currentScoreText = mode === 'fixed' ? `${currentScore}` : `${currentScore}`;
+    document.getElementById("currentScoreValue").innerText = currentScoreText;
+    
     let html = '';
     if(topScores.length === 0) {
         html = '<p>Aucun score enregistré</p>';
     } else {
         let isNewScoreFound = false;
         topScores.forEach((s, i) => {
-            let scoreText = mode === 'fixed' ? `${s.score}s` : `${s.score} notes`;
+            let scoreText = mode === 'fixed' ? `${s.score}` : `${s.score} notes`;
             let isNewScore = false;
             if (currentScoreEntry) {
                 isNewScore = (s.score === currentScoreEntry.score && s.date === currentScoreEntry.date);
@@ -407,11 +433,6 @@ async function showEndScreen(currentScore, currentScoreEntry = null) {
             html += `<div${classAttr}><div class="score-line"><span>#${i+1}</span><span>${scoreText}</span></div><div class="score-date">${s.date}</div></div>`;
             if(isNewScore) isNewScoreFound = true;
         });
-
-        if (!isNewScoreFound && currentScoreEntry) {
-            let scoreText = mode === 'fixed' ? `${currentScoreEntry.score}s` : `${currentScoreEntry.score} notes`;
-            html += `<div class="score-item new-score"><div class="score-line"><span>Votre score</span><span>${scoreText}</span></div><div class="score-date">${currentScoreEntry.date}</div></div>`;
-        }
     }
     document.getElementById("scoresList").innerHTML = html;
 }
