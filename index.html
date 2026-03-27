@@ -19,14 +19,20 @@ h1 {
     margin-top: 10px;
 }
 button {
-    width: 80px;
-    height: 40px;
+    width: auto;
+    padding: 15px 20px;
+    min-width: 80px;
+    height: auto;
     font-size: 14px;
     border-radius: 10px;
     border: none;
     background: #444;
     color: white;
     margin: 5px;
+    text-align: center;
+}
+.mode-btn {
+    min-width: 200px;
 }
 button.active { background: orange; }
 .buttons {
@@ -34,6 +40,13 @@ button.active { background: orange; }
     justify-content: center;
     gap: 10px;
     margin: 15px;
+}
+#modeSelection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
 }
 #note img {
     width: 100%;
@@ -118,6 +131,48 @@ button.active { background: orange; }
     overflow-y: auto;
     margin: 15px auto;
 }
+
+/* Desktop styles */
+@media (min-width: 600px) {
+    h1 {
+        font-size: 2em;
+        margin-top: 20px;
+    }
+    button {
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+    #modeSelection {
+        flex-direction: row;
+    }
+    #note img {
+        max-width: 200px;
+    }
+    #note {
+        min-height: 280px;
+    }
+    #noteText {
+        font-size: 20px;
+    }
+    #remaining, #timer, #result {
+        font-size: 20px;
+    }
+    #currentScore {
+        width: 300px;
+        padding: 10px;
+    }
+    #currentScoreValue {
+        font-size: 36px;
+    }
+    .score-item {
+        width: 300px;
+        padding: 10px;
+    }
+    #scoresList {
+        max-height: 400px;
+        margin: 20px auto;
+    }
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 </head>
@@ -127,8 +182,8 @@ button.active { background: orange; }
 
 <!-- Écran de sélection du mode -->
 <div id="modeSelection">
-    <button onclick="startMode('fixed')">20 notes à deviner</button>
-    <button onclick="startMode('chrono')">Max notes en 1 minute</button>
+    <button class="mode-btn" onclick="startMode('fixed')">20 notes à deviner</button>
+    <button class="mode-btn" onclick="startMode('chrono')">Max notes en 1 minute</button>
 </div>
 
 <!-- Conteneur du jeu -->
