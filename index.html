@@ -53,6 +53,11 @@ button.active { background: orange; }
 #noteText {
     font-size: 20px;
     font-weight: bold;
+    min-height: 1.6em;
+    line-height: 1.6em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 #modeSelection, #gameContainer, #scoresScreen {
     margin-top: 30px;
@@ -124,6 +129,8 @@ button.active { background: orange; }
     }
     #noteText {
         font-size: 18px;
+        min-height: 1.6em;
+        line-height: 1.6em;
     }
     #remaining, #timer, #result {
         font-size: 18px;
@@ -177,7 +184,10 @@ button.active { background: orange; }
 <div id="scoresScreen" style="display:none;">
     <h2 id="scoreTitle">Résultats</h2>
     <div id="scoresList"></div>
-    <button onclick="backToMenu()">Retour à l'accueil</button>
+    <div class="buttons">
+        <button onclick="replayGame()">Rejouer</button>
+        <button onclick="backToMenu()">Retour à l'accueil</button>
+    </div>
 </div>
 
 <script>
@@ -257,6 +267,13 @@ document.addEventListener('keydown', (e)=>{
     if(["1","2","3"].includes(e.key)) {
         e.preventDefault();
         toggle(parseInt(e.key));
+    }
+    if(e.key === "Enter") {
+        const scoresScreen = document.getElementById("scoresScreen");
+        if(scoresScreen.style.display !== "none") {
+            e.preventDefault();
+            replayGame();
+        }
     }
 });
 
@@ -404,6 +421,20 @@ function backToMenu() {
     document.getElementById("modeSelection").style.display = "block";
     if(timerInterval) clearInterval(timerInterval);
     if(autoValidateTimer) clearTimeout(autoValidateTimer);
+}
+
+function replayGame() {
+    if(timerInterval) clearInterval(timerInterval);
+    if(autoValidateTimer) clearTimeout(autoValidateTimer);
+    document.getElementById("scoresScreen").style.display = "none";
+    document.getElementById("gameContainer").style.display = "block";
+    notesDone = 0; score = 0; timeLeft = 60;
+    startTime = Date.now();
+    document.getElementById("remaining").innerText = "";
+    document.getElementById("timer").innerText = "";
+    
+    if(mode==="chrono") startTimer();
+    newNote();
 }
 
 // --------- Lancement du mode ---------
