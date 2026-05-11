@@ -193,17 +193,16 @@ button.active { background: orange; }
 
 /* ===== MODE 2 : clavier type piano ===== */
 #gameContainer.mode2 .buttons {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 6px;
+    justify-items: center;
 }
 
 #gameContainer.mode2 .buttons button {
-    flex: 0 0 auto;
-    min-width: 70px;
-    padding: 14px 10px;
+    width: 100%;
+    max-width: 80px;
+    padding: 14px 0;
     font-size: 16px;
 }
 </style>
