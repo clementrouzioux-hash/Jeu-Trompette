@@ -49,6 +49,18 @@ button.active { background: orange; }
     justify-content: center;
     gap: 10px;
     margin: 15px;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+@media (max-width: 600px) {
+
+    .buttons button {
+        flex: 1 1 40%;
+        min-width: 80px;
+        font-size: 18px;
+        padding: 18px;
+    }
 }
 
 /* ---------------- MENU ---------------- */
