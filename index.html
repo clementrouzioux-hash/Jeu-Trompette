@@ -53,15 +53,6 @@ button.active { background: orange; }
     max-width: 100%;
 }
 
-@media (max-width: 600px) {
-
-    .buttons button {
-        flex: 1 1 40%;
-        min-width: 80px;
-        font-size: 18px;
-        padding: 18px;
-    }
-}
 
 /* ---------------- MENU ---------------- */
 #modeSelection {
@@ -185,27 +176,29 @@ button.active { background: orange; }
     }
 }
 
-@media (max-width: 600px) {
-    #gameContainer.mode2 .buttons button {
-        flex: 0 0 auto !important;
-    }
-}
-
-/* ===== MODE 2 : clavier type piano ===== */
 #gameContainer.mode2 .buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 6px;
-    justify-items: center;
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
 }
 
 #gameContainer.mode2 .buttons button {
     width: 100%;
-    max-width: 80px;
-    padding: 14px 0;
+    aspect-ratio: 1 / 1;
+    padding: 0;
     font-size: 16px;
 }
+
+@media (max-width: 600px) {
+    #gameContainer.mode2 .buttons {
+        max-width: 100%;
+    }
+}
 </style>
+
 
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
