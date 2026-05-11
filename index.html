@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jeu Trompette</title>
+
 <style>
 body {
     font-family: Arial;
@@ -16,78 +17,119 @@ body {
     min-height: 100vh;
     margin: 0;
 }
-* {
-    box-sizing: border-box;
-}
+
+* { box-sizing: border-box; }
+
 h1 {
     font-size: 2em;
     margin-top: 10px;
 }
+
+/* ---------------- BUTTONS ---------------- */
 button {
     width: auto;
     padding: 20px 25px;
     min-width: 100px;
-    height: auto;
     font-size: 16px;
     border-radius: 10px;
     border: none;
     background: #444;
     color: white;
     margin: 5px;
-    text-align: center;
 }
+
+button.active { background: orange; }
+
 .mode-btn {
     min-width: 250px;
 }
-button.active { background: orange; }
+
 .buttons {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin: 15px;
 }
+
+/* ---------------- MENU ---------------- */
 #modeSelection {
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: center;
-    justify-content: center;
+    margin-top: 30px;
 }
-#note img {
-    width: 100%;
-    max-width: 180px;
-    height: auto;
-    display: block;
-    border: 1px solid #ccc;
-    background: #fff;
-}
+
+/* ---------------- GAME ---------------- */
 #note {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 8px;
     min-height: 250px;
 }
+
+#note img {
+    width: 100%;
+    max-width: 180px;
+    border: 1px solid #ccc;
+}
+
 #noteText {
     font-size: 20px;
     font-weight: bold;
-    min-height: 1.6em;
-    line-height: 1.6em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
-#modeSelection, #gameContainer, #scoresScreen {
-    margin-top: 30px;
-}
+
 #remaining, #timer, #result {
     font-size: 20px;
     margin: 5px;
 }
+
+/* ---------------- SCORES SCREEN ---------------- */
+#gameContainer, #scoresScreen {
+    margin-top: 30px;
+}
+
 #scoresScreen {
     display: none;
 }
+
+/* titre */
+#scoreTitle {
+    margin-bottom: 10px;
+}
+
+/* score actuel */
+#currentScore {
+    background: #ffd700;
+    margin: 10px auto;
+    padding: 20px;
+    width: 95%;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+#currentScoreValue {
+    font-size: 32px;
+    font-weight: bold;
+    color: #111;
+}
+
+#currentScoreRank{
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+/* liste */
+#scoresList {
+    max-height: 350px;
+    overflow-y: auto;
+    margin: 15px auto;
+}
+
+/* SCORE ITEM (RESTE IDENTIQUE À TON ANCIEN DESIGN) */
 .score-item {
     background: #f0f0f0;
     margin: 10px auto;
@@ -99,10 +141,12 @@ button.active { background: orange; }
     align-items: flex-start;
     gap: 4px;
 }
+
 .score-item.new-score {
     background: #ffd700;
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
+
 .score-line {
     width: 100%;
     display: flex;
@@ -110,125 +154,31 @@ button.active { background: orange; }
     font-weight: 700;
     font-size: 0.9em;
 }
+
 .score-date {
     font-size: 0.75em;
     color: #444;
     font-weight: 400;
 }
-.score-item strong {
-    color: #111;
-}
-#currentScore {
-    background: #ffd700;
-    margin: 10px auto;
-    padding: 20px;
-    width: 95%;
-    border-radius: 5px;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-}
-#currentScoreValue {
-    font-size: 32px;
-    font-weight: bold;
-    color: #111;
-}
-#scoresList {
-    max-height: 350px;
-    overflow-y: auto;
-    margin: 15px auto;
-}
 
-/* Desktop styles */
+/* ---------------- RESPONSIVE ---------------- */
 @media (min-width: 600px) {
-    h1 {
-        font-size: 2em;
-        margin-top: 20px;
-    }
-    button {
-        padding: 15px 20px;
-        font-size: 16px;
-    }
-    #modeSelection {
-        flex-direction: row;
-    }
     #note img {
         max-width: 200px;
     }
-    #note {
-        min-height: 280px;
-    }
-    #noteText {
-        font-size: 20px;
-    }
-    #remaining, #timer, #result {
-        font-size: 20px;
-    }
-    #currentScore {
-        width: 300px;
-        padding: 10px;
-    }
-    #currentScoreValue {
-        font-size: 36px;
-    }
+
+    #currentScore,
     .score-item {
         width: 300px;
-        padding: 10px;
-    }
-    #scoresList {
-        max-height: 400px;
-        margin: 20px auto;
     }
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-</head>
-<body>
 
-<h1>🎺 Jeu de Trompette</h1>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Écran de sélection du mode -->
-<div id="modeSelection">
-    <button class="mode-btn" onclick="startMode('fixed')">20 notes à deviner</button>
-    <button class="mode-btn" onclick="startMode('chrono')">Max notes en 1 minute</button>
-</div>
-
-<!-- Conteneur du jeu -->
-<div id="gameContainer" style="display:none;">
-    <div id="remaining"></div>
-    <div id="timer"></div>
-    <div id="note">
-        <img id="noteImage" src="" alt="Note">
-        <span id="noteText"></span>
-    </div>
-    <div class="buttons">
-        <button data-button="1" onclick="toggle(1)">1</button>
-        <button data-button="2" onclick="toggle(2)">2</button>
-        <button data-button="3" onclick="toggle(3)">3</button>
-    </div>
-    <div id="result"></div>
-</div>
-
-<!-- Écran des scores -->
-<div id="scoresScreen" style="display:none;">
-    <h2 id="scoreTitle">Résultats</h2>
-    <div id="currentScore">
-        <div id="currentScoreValue">-</div>
-    </div>
-    <div id="scoresList"></div>
-    <div class="buttons">
-        <button onclick="replayGame()">Rejouer</button>
-        <button onclick="backToMenu()">Retour à l'accueil</button>
-    </div>
-</div>
-
+<!-- 🎺 FAVICON -->
 <script>
-// ----------------- Supabase configuration -----------------
-const SUPABASE_URL = "https://muqshtdvzbcfyywjmynu.supabase.co";
-const SUPABASE_KEY = "sb_publishable_36JS5UkCH9_qDS_uKdtgZQ_xpdKo1O2";
-const supabaseClient = (typeof window !== 'undefined' && window.supabase)
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
-    : null;
-
-// ----------------- Favicon avec emoji -----------------
 (function() {
     const canvas = document.createElement('canvas');
     canvas.width = 32;
@@ -236,330 +186,101 @@ const supabaseClient = (typeof window !== 'undefined' && window.supabase)
     const ctx = canvas.getContext('2d');
     ctx.font = '24px serif';
     ctx.fillText('🎺', 4, 24);
-    const dataURL = canvas.toDataURL('image/png');
+
     const link = document.createElement('link');
     link.rel = 'icon';
-    link.href = dataURL;
+    link.href = canvas.toDataURL();
     document.head.appendChild(link);
 })();
-
-// ----------------- Formatage des notes -----------------
-function formatNoteLabel(noteKey) {
-    const baseMap = { DO: 'Do', RE: 'Ré', MI: 'Mi', FA: 'Fa', SOL: 'Sol', LA: 'La', SI: 'Si' };
-    const bases = Object.keys(baseMap).sort((a, b) => b.length - a.length);
-    const base = bases.find((k) => noteKey.startsWith(k));
-    if (!base) return noteKey;
-
-    let label = baseMap[base];
-    const suffix = noteKey.slice(base.length);
-
-    for (const char of suffix) {
-        if (char === 'C') label += '♮';
-        else if (char === 'D') label += '#';
-        else if (char === 'A') label += ' Aigu';
-        else if (char === 'G') label += ' Grave';
-        else if (char === 'B') label += '♭';
-        else label += char;
-    }
-
-    return label;
-}
-
-// ----------------- Images et doigtés -----------------
-const notesImages = {
-"DO":"Images/DO.png","DOC":"Images/DOC.png","DOD":"Images/DOD.png","DODA":"Images/DODA.png","DOA":"Images/DOA.png","DOCA":"Images/DOCA.png","DOAA":"Images/DOAA.png",
-"FA":"Images/FA.png","FAC":"Images/FAC.png","FAD":"Images/FAD.png","FADA":"Images/FADA.png","FADG":"Images/FADG.png","FAA":"Images/FAA.png","FACA":"Images/FACA.png",
-"LA":"Images/LA.png","LAC":"Images/LAC.png","LAD":"Images/LAD.png","LAG":"Images/LAG.png","LACG":"Images/LACG.png","LADA":"Images/LADA.png","LADG":"Images/LADG.png","LAA":"Images/LAA.png","LACA":"Images/LACA.png",
-"LAB":"Images/LAB.png","LABA":"Images/LABA.png","LABG":"Images/LABG.png",
-"MI":"Images/MI.png","MIC":"Images/MIC.png","MIA":"Images/MIA.png","MICA":"Images/MICA.png","MIB":"Images/MIB.png","MIBA":"Images/MIBA.png",
-"RE":"Images/RE.png","REC":"Images/REC.png","RED":"Images/RED.png","REDA":"Images/REDA.png","REA":"Images/REA.png","RECA":"Images/RECA.png","REB":"Images/REB.png","REBA":"Images/REBA.png",
-"SI":"Images/SI.png","SIC":"Images/SIC.png","SIA":"Images/SIA.png","SICA":"Images/SICA.png","SIB":"Images/SIB.png","SIBA":"Images/SIBA.png","SIBG":"Images/SIBG.png","SIG":"Images/SIG.png","SICG":"Images/SICG.png",
-"SOL":"Images/SOL.png","SOLC":"Images/SOLC.png","SOLD":"Images/SOLD.png","SOLDA":"Images/SOLDA.png","SOLDG":"Images/SOLDG.png","SOLA":"Images/SOLA.png","SOLCA":"Images/SOLCA.png","SOLB":"Images/SOLB.png","SOLBA":"Images/SOLBA.png","SOLBG":"Images/SOLBG.png","SOLG":"Images/SOLG.png","SOLCG":"Images/SOLCG.png"
-};
-
-const notes = {
-"DO":[],"DOC":[],"DOD":[1,2,3],"DODA":[1,2],"DOA":[],"DOCA":[],"DOAA":[],
-"FA":[1],"FAC":[1],"FAD":[2],"FADA":[2],"FADG":[1,2,3],"FAA":[1],"FACA":[1],
-"LA":[1,2],"LAC":[1,2],"LAD":[1],"LAG":[1,2],"LACG":[1,2],"LADA":[1],"LADG":[1],"LAA":[1,2],"LACA":[1,2],
-"LAB":[2,3],"LABA":[2,3],"LABG":[2,3],
-"MI":[1,2],"MIC":[1,2],"MIA":[],"MICA":[],"MIB":[2,3],"MIBA":[2],
-"RE":[1,3],"REC":[1,3],"RED":[2,3],"REDA":[2],"REA":[1],"RECA":[1],"REB":[1,2,3],"REBA":[1,2],
-"SI":[2],"SIC":[2],"SIA":[2],"SICA":[2],"SIB":[1],"SIBA":[1],"SIBG":[1],"SIG":[2],"SICG":[2],
-"SOL":[],"SOLC":[],"SOLD":[2,3],"SOLDA":[2,3],"SOLDG":[2,3],"SOLA":[],"SOLCA":[],"SOLB":[2],"SOLBA":[2],"SOLBG":[1,2,3],"SOLG":[1,3],"SOLCG":[1,3]
-};
-
-// ----------------- Variables -----------------
-let current="", pressed=[], mode="", totalNotes=20, notesDone=0, score=0, timeLeft=60, timerInterval, startTime, autoValidateTimer;
-let touchedButtons = new Set(); // Pour tracker les boutons tactiles activés
-
-// --------- Initialisation des événements ---------
-document.addEventListener('keydown', (e)=>{
-    if(["1","2","3"].includes(e.key)) {
-        e.preventDefault();
-        toggle(parseInt(e.key));
-    }
-    if(e.key === "Enter") {
-        const scoresScreen = document.getElementById("scoresScreen");
-        if(scoresScreen.style.display !== "none") {
-            e.preventDefault();
-            replayGame();
-        }
-    }
-});
-
-// Gérer les événements tactiles multi-touch
-setTimeout(()=>{
-    document.querySelectorAll("[data-button]").forEach(btn=>{
-        btn.addEventListener('touchstart', (e)=>{
-            e.preventDefault();
-            const buttonNum = parseInt(btn.getAttribute('data-button'));
-            if(!touchedButtons.has(buttonNum)) {
-                touchedButtons.add(buttonNum);
-                toggle(buttonNum);
-            }
-        });
-        
-        btn.addEventListener('touchend', (e)=>{
-            e.preventDefault();
-            const buttonNum = parseInt(btn.getAttribute('data-button'));
-            touchedButtons.delete(buttonNum);
-        });
-        
-        btn.addEventListener('touchcancel', (e)=>{
-            const buttonNum = parseInt(btn.getAttribute('data-button'));
-            touchedButtons.delete(buttonNum);
-        });
-    });
-}, 100);
-
-// --------- Gestion des scores Supabase ---------
-function saveScoreLocal(modeType, scoreValue) {
-    const scores = JSON.parse(localStorage.getItem('trumpetScores')) || [];
-    scores.push({ mode: modeType, score: scoreValue, date: new Date().toLocaleString('fr-FR') });
-    localStorage.setItem('trumpetScores', JSON.stringify(scores));
-    return scores;
-}
-
-async function saveScore(modeType, scoreValue) {
-    saveScoreLocal(modeType, scoreValue);
-    const localEntry = { mode: modeType, score: scoreValue, date: new Date().toLocaleString('fr-FR') };
-
-    if (!supabaseClient) {
-        console.warn('Supabase client not available, score enregistré en local uniquement.');
-        return localEntry;
-    }
-
-    console.log(`Envoi score supabase (${modeType}):`, scoreValue);
-    const { data, error } = await supabaseClient
-        .from('trumpet_scores')
-        .insert([{ mode: modeType, score: scoreValue, created_at: new Date().toISOString() }]);
-
-    if (error) {
-        console.error('Supabase saveScore error :', error);
-        return localEntry;
-    }
-
-    console.log('Supabase answer saveScore :', data);
-
-    if (data && data.length > 0) {
-        return {
-            mode: modeType,
-            score: scoreValue,
-            date: data[0].created_at ? new Date(data[0].created_at).toLocaleString('fr-FR') : localEntry.date
-        };
-    }
-
-    return localEntry;
-}
-
-async function getTopScores(modeType) {
-    let topScores = [];
-
-    if (supabaseClient) {
-        const { data, error } = await supabaseClient
-            .from('trumpet_scores')
-            .select('mode, score, created_at')
-            .eq('mode', modeType)
-            .order('score', { ascending: modeType === 'fixed' })
-            .limit(10);
-
-        if (error) {
-            console.error('Supabase getTopScores error:', error);
-        } else {
-            topScores = data.map((entry) => ({
-                mode: entry.mode,
-                score: entry.score,
-                date: entry.created_at ? new Date(entry.created_at).toLocaleString('fr-FR') : ''
-            }));
-            console.log('Supabase loaded top scores :', topScores);
-        }
-    } else {
-        console.warn('Supabase client not available, lecture localStorage.');
-    }
-
-    if (topScores.length === 0) {
-        const local = (JSON.parse(localStorage.getItem('trumpetScores')) || [])
-            .filter((s) => s.mode === modeType)
-            .sort((a, b) => modeType === 'fixed' ? a.score - b.score : b.score - a.score)
-            .slice(0, 10);
-
-        if (local.length > 0) {
-            console.log('Local top scores fallback :', local);
-            return local;
-        }
-    }
-
-    return topScores;
-}
-
-async function showEndScreen(currentScore, currentScoreEntry = null) {
-    document.getElementById("gameContainer").style.display = "none";
-    document.getElementById("scoresScreen").style.display = "block";
-    
-    let topScores = await getTopScores(mode);
-    let title = mode === 'fixed' ? 'Meilleurs temps pour 20 notes' : 'Meilleur nombre de notes en 1 min';
-    document.getElementById("scoreTitle").innerText = title;
-    
-    let currentScoreText = mode === 'fixed' ? `${currentScore} sec` : `${currentScore}`;
-    document.getElementById("currentScoreValue").innerText = currentScoreText;
-    
-    let html = '';
-    if(topScores.length === 0) {
-        html = '<p>Aucun score enregistré</p>';
-    } else {
-        let isNewScoreFound = false;
-        topScores.forEach((s, i) => {
-            let scoreText = mode === 'fixed' ? `${s.score} sec` : `${s.score} notes`;
-            let isNewScore = false;
-            if (currentScoreEntry) {
-                isNewScore = (s.score === currentScoreEntry.score && s.date === currentScoreEntry.date);
-            } else {
-                isNewScore = !isNewScoreFound && s.score === currentScore;
-            }
-            let classAttr = isNewScore ? ' class="score-item new-score"' : ' class="score-item"';
-            html += `<div${classAttr}><div class="score-line"><span>#${i+1}</span><span>${scoreText}</span></div><div class="score-date">${s.date}</div></div>`;
-            if(isNewScore) isNewScoreFound = true;
-        });
-    }
-    document.getElementById("scoresList").innerHTML = html;
-}
-
-function backToMenu() {
-    document.getElementById("scoresScreen").style.display = "none";
-    document.getElementById("modeSelection").style.display = "block";
-    if(timerInterval) clearInterval(timerInterval);
-    if(autoValidateTimer) clearTimeout(autoValidateTimer);
-}
-
-function replayGame() {
-    if(timerInterval) clearInterval(timerInterval);
-    if(autoValidateTimer) clearTimeout(autoValidateTimer);
-    document.getElementById("scoresScreen").style.display = "none";
-    document.getElementById("gameContainer").style.display = "block";
-    notesDone = 0; score = 0; timeLeft = 60;
-    startTime = Date.now();
-    document.getElementById("remaining").innerText = "";
-    document.getElementById("timer").innerText = "";
-    
-    if(mode==="chrono") startTimer();
-    newNote();
-}
-
-// --------- Lancement du mode ---------
-function startMode(selectedMode){
-    mode = selectedMode;
-    document.getElementById("modeSelection").style.display = "none";
-    document.getElementById("gameContainer").style.display = "block";
-    notesDone = 0; score = 0; timeLeft = 60;
-    startTime = Date.now();
-    document.getElementById("remaining").innerText = "";
-    document.getElementById("timer").innerText = "";
-
-    if(mode==="chrono") startTimer();
-    newNote();
-}
-
-// --------- Timer ---------
-function startTimer(){
-    timerInterval = setInterval(async ()=>{
-        timeLeft--;
-        document.getElementById("timer").innerText = `Temps: ${timeLeft}s`;
-        if(timeLeft<=0){
-            clearInterval(timerInterval);
-            const saved = await saveScore('chrono', score);
-            await showEndScreen(score, saved);
-        }
-    },1000);
-}
-
-// --------- Nouvelle note ---------
-async function newNote(){
-    if(autoValidateTimer) clearTimeout(autoValidateTimer);
-    
-    if(mode==="fixed"){
-        if(notesDone>=totalNotes){
-            let elapsedTime = Math.round((Date.now() - startTime) / 1000);
-            const saved = await saveScore('fixed', elapsedTime);
-            await showEndScreen(elapsedTime, saved);
-            return;
-        }
-        notesDone++;
-        document.getElementById("remaining").innerText=`Note ${notesDone} / ${totalNotes}`;
-    }
-
-    const keys = Object.keys(notes);
-    current = keys[Math.floor(Math.random()*keys.length)];
-
-    document.getElementById("noteImage").src=notesImages[current]||"";
-    document.getElementById("noteImage").alt=current;
-    document.getElementById("noteText").innerText=formatNoteLabel(current);
-
-    pressed=[];
-    updateButtons();
-    document.getElementById("result").innerText="";
-    
-    // Auto-validation après 1 seconde si pas de doigté requis
-    if(notes[current].length === 0) {
-        autoValidateTimer = setTimeout(()=>{
-            let correct=notes[current].slice().sort();
-            let currentPressed=pressed.slice().sort();
-            if(JSON.stringify(correct)===JSON.stringify(currentPressed)){
-                document.getElementById("result").innerText="✅ Correct !";
-                if(mode==="fixed") score+=1;
-                if(mode==="chrono") score+=1;
-                setTimeout(newNote,200);
-            }
-        }, 1000);
-    }
-}
-
-// --------- Gestion des pistons ---------
-function toggle(n){
-    if(autoValidateTimer) clearTimeout(autoValidateTimer);
-    
-    if(pressed.includes(n)) pressed=pressed.filter(x=>x!==n);
-    else pressed.push(n);
-    updateButtons();
-
-    let correct=notes[current].slice().sort();
-    let currentPressed=pressed.slice().sort();
-    if(JSON.stringify(correct)===JSON.stringify(currentPressed)){
-        document.getElementById("result").innerText="✅ Correct !";
-        if(mode==="fixed") score+=1;
-        if(mode==="chrono") score+=1;
-        setTimeout(newNote,200);
-    }
-}
-
-// --------- Mise à jour des boutons ---------
-function updateButtons(){
-    document.querySelectorAll("button").forEach(btn=>{
-        if(["1","2","3"].includes(btn.innerText)){
-            const num=parseInt(btn.innerText);
-            btn.classList.toggle("active",pressed.includes(num));
-        }
-    });
-}
 </script>
+
+</head>
+
+<body>
+
+<h1>🎺 Jeu de Trompette</h1>
+
+<!-- MENU -->
+<div id="modeSelection">
+
+    <h2>🎺 Doigtés</h2>
+<button onclick="startMode('fixed')">20 notes à deviner</button>
+<button onclick="startMode('chrono')">Max notes en 1 minute</button>
+
+<h2>🎵 Lecture</h2>
+<button onclick="startMode('mode2')">Nommer les notes (30s)</button>
+
+</div>
+
+<!-- GAME -->
+<div id="gameContainer" style="display:none;">
+    <div id="remaining"></div>
+    <div id="timer"></div>
+
+    <div id="note">
+        <img id="noteImage" src="" alt="note">
+        <span id="noteText"></span>
+    </div>
+
+    <div class="buttons">
+    <button 
+        onmousedown="press(1)" 
+        onmouseup="release(1)" 
+        ontouchstart="press(1)" 
+        ontouchend="release(1)"
+        ontouchcancel="release(1)">
+        1
+    </button>
+
+    <button 
+        onmousedown="press(2)" 
+        onmouseup="release(2)" 
+        ontouchstart="press(2)" 
+        ontouchend="release(2)"
+        ontouchcancel="release(2)">
+        2
+    </button>
+
+    <button 
+        onmousedown="press(3)" 
+        onmouseup="release(3)" 
+        ontouchstart="press(3)" 
+        ontouchend="release(3)"
+        ontouchcancel="release(3)">
+        3
+    </button>
+</div>
+
+    <div id="result"></div>
+</div>
+
+<!-- SCORES -->
+<div id="scoresScreen">
+    <h2 id="scoreTitle">Résultats</h2>
+
+    <div id="currentScore">
+        <div id="currentScoreRank">-</div>
+        <div id="currentScoreValue">-</div>
+    </div>
+
+    <div id="scoresList"></div>
+
+    <div class="buttons">
+        <button onclick="replayGame()">Rejouer</button>
+        <button onclick="backToMenu()">Retour à l'accueil</button>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="js/data.js"></script>
+<script src="js/scores.js"></script>
+<script src="js/mode1.js"></script>
+<script src="js/mode2.js"></script>
+<script src="js/mode3.js"></script>
+<script src="js/mode4.js"></script>
+<script src="js/mode5.js"></script>
+<script src="js/game.js"></script>
+<script src="js/main.js"></script>
+
 </body>
 </html>
