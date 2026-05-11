@@ -16,7 +16,10 @@ window.mode2 = {
     timerInterval: null,
 
     start(){
-    document.getElementById("gameContainer").classList.add("mode2");
+   const game = document.getElementById("gameContainer");
+game.classList.remove("mode2");
+void game.offsetWidth; // force refresh DOM
+game.classList.add("mode2");
     this.score = 0;
     this.timeLeft = 30;
 
