@@ -14,6 +14,7 @@ let totalNotes = 20;
 
 // ----------------- Lancement du mode -----------------
 function startMode(selectedMode){
+    document.getElementById("gameContainer").classList.remove("mode2");
     document.getElementById("modeSelection").style.display = "none";
     document.getElementById("gameContainer").style.display = "block";
 

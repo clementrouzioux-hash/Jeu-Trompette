@@ -184,6 +184,22 @@ button.active { background: orange; }
         width: 300px;
     }
 }
+
+/* ===== MODE 2 : clavier type piano ===== */
+#gameContainer.mode2 .buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+    gap: 6px;
+}
+
+#gameContainer.mode2 .buttons button {
+    flex: 0 0 auto;
+    min-width: 70px;
+    padding: 14px 10px;
+    font-size: 16px;
+}
 </style>
 
 <!-- Supabase -->
@@ -205,11 +221,8 @@ button.active { background: orange; }
     document.head.appendChild(link);
 })();
 </script>
-
 </head>
-
 <body>
-
 
 <!-- MENU -->
 <div id="modeSelection">

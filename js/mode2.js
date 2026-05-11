@@ -16,7 +16,7 @@ window.mode2 = {
     timerInterval: null,
 
     start(){
-
+    document.getElementById("gameContainer").classList.add("mode2");
     this.score = 0;
     this.timeLeft = 30;
 
