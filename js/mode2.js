@@ -94,9 +94,14 @@ if (img.dataset.src !== newSrc) {
 
         // 🔥 ultra rapide transition
         requestAnimationFrame(() => {
-            this.newNote();
-            this.locked = false;
-        });
+
+    // reset visuel des boutons
+    document.querySelectorAll(".buttons button")
+        .forEach(b => b.classList.remove("active"));
+
+    this.newNote();
+    this.locked = false;
+});
 
     } else {
         // optionnel: petit feedback erreur
