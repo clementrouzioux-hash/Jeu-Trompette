@@ -165,36 +165,36 @@ button.active { background: orange; }
 }
 
 /* ---------------- RESPONSIVE ---------------- */
-@media (min-width: 600px) {
-    #note img {
-        max-width: 200px;
-    }
-
-    #currentScore,
-    .score-item {
-        width: 300px;
-    }
-}
-
-#gameContainer.mode2 .buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    width: 100%;
-    max-width: 350px;
-    margin: 0 auto;
-}
-
-#gameContainer.mode2 .buttons button {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    padding: 0;
-    font-size: 16px;
-}
-
 @media (max-width: 600px) {
+
+    /* MODE 1 : garder 1 2 3 sur une ligne */
+    #gameContainer:not(.mode2) .buttons {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+
+    #gameContainer:not(.mode2) .buttons button {
+        flex: 0 0 auto;
+        min-width: 80px;
+        font-size: 18px;
+        padding: 18px;
+    }
+
+    /* MODE 2 : clavier compact horizontal */
     #gameContainer.mode2 .buttons {
-        max-width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        overflow-x: auto;
+        gap: 6px;
+    }
+
+    #gameContainer.mode2 .buttons button {
+        flex: 0 0 auto;
+        min-width: 60px;
+        padding: 12px 8px;
+        font-size: 14px;
     }
 }
 </style>
