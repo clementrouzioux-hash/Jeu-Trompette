@@ -93,15 +93,16 @@ if (img.dataset.src !== newSrc) {
         document.getElementById("result").innerText = "✅";
 
         // 🔥 ultra rapide transition
-        requestAnimationFrame(() => {
+        setTimeout(() => {
 
-    // reset visuel des boutons
+    // reset visuel
     document.querySelectorAll(".buttons button")
         .forEach(b => b.classList.remove("active"));
 
     this.newNote();
     this.locked = false;
-});
+
+}, 120);
 
     } else {
         // optionnel: petit feedback erreur
