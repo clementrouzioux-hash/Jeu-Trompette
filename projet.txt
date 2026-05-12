@@ -50,19 +50,9 @@ button.active { background: orange; }
     justify-content: center;
     gap: 10px;
     margin: 15px;
-    flex-wrap: wrap;
     max-width: 100%;
 }
 
-@media (max-width: 600px) {
-
-    .buttons button {
-        flex: 1 1 40%;
-        min-width: 80px;
-        font-size: 18px;
-        padding: 18px;
-    }
-}
 
 /* ---------------- MENU ---------------- */
 #modeSelection {
@@ -175,32 +165,45 @@ button.active { background: orange; }
 }
 
 /* ---------------- RESPONSIVE ---------------- */
-@media (min-width: 600px) {
-    #note img {
-        max-width: 200px;
+@media (max-width: 600px) {
+
+    /* MODE 1 : garder 1 2 3 sur une ligne */
+    #gameContainer:not(.mode2) .buttons {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
     }
 
-    #currentScore,
-    .score-item {
-        width: 300px;
+    #gameContainer:not(.mode2) .buttons button {
+        flex: 0 0 auto;
+        min-width: 80px;
+        font-size: 18px;
+        padding: 18px;
     }
 }
 
-/* ===== MODE 2 : clavier type piano ===== */
+/* ===== MODE 2 (clavier en 2 lignes propre) ===== */
+
 #gameContainer.mode2 .buttons {
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
-    overflow-x: auto;
-    gap: 6px;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
 }
 
-#gameContainer.mode2 .buttons button {
-    flex: 0 0 auto;
+#gameContainer.mode2 .buttons .row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+#gameContainer.mode2 .mode2-row button {
     min-width: 70px;
-    padding: 14px 10px;
+    padding: 12px 14px;
     font-size: 16px;
 }
+
 </style>
 
 <!-- Supabase -->
@@ -492,7 +495,10 @@ window.mode2 = {
     timerInterval: null,
 
     start(){
-    document.getElementById("gameContainer").classList.add("mode2");
+   const game = document.getElementById("gameContainer");
+game.classList.remove("mode2");
+void game.offsetWidth; // force refresh DOM
+game.classList.add("mode2");
     this.score = 0;
     this.timeLeft = 30;
 
@@ -517,15 +523,20 @@ window.mode2 = {
     const container = document.querySelector(".buttons");
 
     container.innerHTML = `
-        <button onclick="mode2.answer('DO', this)">Do</button>
-        <button onclick="mode2.answer('RE', this)">Ré</button>
-        <button onclick="mode2.answer('MI', this)">Mi</button>
-        <button onclick="mode2.answer('FA', this)">Fa</button>
-        <button onclick="mode2.answer('SOL', this)">Sol</button>
-        <button onclick="mode2.answer('LA', this)">La</button>
-        <button onclick="mode2.answer('SI', this)">Si</button>
+        <div class="row">
+            <button onclick="mode2.answer('DO', this)">Do</button>
+            <button onclick="mode2.answer('RE', this)">Ré</button>
+            <button onclick="mode2.answer('MI', this)">Mi</button>
+        </div>
+
+        <div class="row">
+            <button onclick="mode2.answer('FA', this)">Fa</button>
+            <button onclick="mode2.answer('SOL', this)">Sol</button>
+            <button onclick="mode2.answer('LA', this)">La</button>
+            <button onclick="mode2.answer('SI', this)">Si</button>
+        </div>
     `;
-    },
+},
 
 newNote(){
     const note = this.notes[Math.floor(Math.random() * this.notes.length)];

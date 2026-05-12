@@ -44,15 +44,20 @@ game.classList.add("mode2");
     const container = document.querySelector(".buttons");
 
     container.innerHTML = `
-        <button onclick="mode2.answer('DO', this)">Do</button>
-        <button onclick="mode2.answer('RE', this)">Ré</button>
-        <button onclick="mode2.answer('MI', this)">Mi</button>
-        <button onclick="mode2.answer('FA', this)">Fa</button>
-        <button onclick="mode2.answer('SOL', this)">Sol</button>
-        <button onclick="mode2.answer('LA', this)">La</button>
-        <button onclick="mode2.answer('SI', this)">Si</button>
+        <div class="mode2-row">
+            <button onclick="mode2.answer('DO', this)">Do</button>
+            <button onclick="mode2.answer('RE', this)">Ré</button>
+            <button onclick="mode2.answer('MI', this)">Mi</button>
+        </div>
+
+        <div class="mode2-row">
+            <button onclick="mode2.answer('FA', this)">Fa</button>
+            <button onclick="mode2.answer('SOL', this)">Sol</button>
+            <button onclick="mode2.answer('LA', this)">La</button>
+            <button onclick="mode2.answer('SI', this)">Si</button>
+        </div>
     `;
-    },
+},
 
 newNote(){
     const note = this.notes[Math.floor(Math.random() * this.notes.length)];
