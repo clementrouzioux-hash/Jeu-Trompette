@@ -39,3 +39,14 @@ function formatNoteLabel(noteKey) {
 
    return label;
 }
+
+window.noteSounds = {};
+
+Object.keys(notes).forEach(note => {
+
+    const audio = new Audio(`Audio/${note}.mp3`);
+
+    audio.preload = "auto";
+
+    window.noteSounds[note] = audio;
+});

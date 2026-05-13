@@ -76,6 +76,7 @@ async function getTopScores(modeType) {
 
 // ----------------- ÉCRAN FIN -----------------
 async function showEndScreen(currentScore, currentScoreEntry = null) {
+    stopCurrentNote();
 
     document.getElementById("gameContainer").style.display = "none";
     document.getElementById("scoresScreen").style.display = "block";

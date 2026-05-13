@@ -11,9 +11,16 @@ let timerInterval;
 let startTime;
 let totalNotes = 20;
 
+let soundEnabled = true;
+// mémorisation (optionnel mais recommandé)
+soundEnabled = localStorage.getItem("soundEnabled");
+soundEnabled = soundEnabled === null ? true : soundEnabled === "true";
+let currentAudio = null;
+
 
 // ----------------- Lancement du mode -----------------
 function startMode(selectedMode){
+    stopCurrentNote();
     document.getElementById("gameContainer").classList.remove("mode2");
     document.getElementById("modeSelection").style.display = "none";
     document.getElementById("gameContainer").style.display = "block";
@@ -40,6 +47,7 @@ function startTimer(){
         document.getElementById("timer").innerText = `Temps: ${timeLeft}s`;
 
         if(timeLeft <= 0){
+            stopCurrentNote();
             clearInterval(timerInterval);
 
             saveScore(mode, score).then(saved => {
@@ -159,3 +167,64 @@ function resetButtons(){
         </button>
     `;
 }
+
+function playCurrentNote(note){
+
+    if(!soundEnabled) return;
+
+    if(!window.noteSounds){
+        console.warn("noteSounds pas chargé");
+        return;
+    }
+
+    if(currentAudio){
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+
+    currentAudio = window.noteSounds[note];
+
+    if(!currentAudio) return;
+
+    currentAudio.loop = true;
+    currentAudio.currentTime = 0;
+
+    currentAudio.play().catch(err => {
+        console.log("Lecture bloquée :", err);
+    });
+}
+
+function stopCurrentNote(){
+
+    if(currentAudio){
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+
+    localStorage.setItem("soundEnabled", soundEnabled);
+
+    const btn = document.getElementById("soundToggle");
+
+    if (soundEnabled) {
+        btn.classList.remove("off");
+        btn.innerText = "🔊";
+    } else {
+        btn.classList.add("off");
+        btn.innerText = "🔇";
+
+        stopCurrentNote();
+    }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("soundToggle");
+
+    if (!soundEnabled) {
+        btn.classList.add("off");
+        btn.innerText = "🔇";
+    }
+});

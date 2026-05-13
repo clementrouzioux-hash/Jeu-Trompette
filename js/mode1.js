@@ -58,6 +58,7 @@ async function newNoteMode1() {
 
     const keys = Object.keys(notes);
 current = keys[Math.floor(Math.random() * keys.length)];
+playCurrentNote(current);
 
 pressed = []; // ✅ reset les boutons
 
@@ -95,6 +96,7 @@ function checkAnswer() {
     if (JSON.stringify(correct) === JSON.stringify(currentPressed)) {
 
         canAnswer = false;
+        stopCurrentNote();
 
         score++;
         document.getElementById("result").innerText = "✅ Correct !";

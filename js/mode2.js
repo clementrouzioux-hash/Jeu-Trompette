@@ -61,7 +61,8 @@ game.classList.add("mode2");
 
 newNote(){
     const note = this.notes[Math.floor(Math.random() * this.notes.length)];
-    this.current = note;
+    this.current = note; 
+    playCurrentNote(note);
 
     this.locked = false; // reset immédiat
 
@@ -89,6 +90,7 @@ if (img.dataset.src !== newSrc) {
     btn.classList.add("active");
 
     if(ans === base){
+        stopCurrentNote();
         this.score++;
         document.getElementById("result").innerText = "✅";
 

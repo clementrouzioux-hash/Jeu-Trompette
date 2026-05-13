@@ -191,7 +191,7 @@ button.active { background: orange; }
     align-items: center;
 }
 
-#gameContainer.mode2 .buttons .row {
+#gameContainer.mode2 .mode2-row {
     display: flex;
     justify-content: center;
     gap: 8px;
@@ -202,6 +202,36 @@ button.active { background: orange; }
     min-width: 70px;
     padding: 12px 14px;
     font-size: 16px;
+
+}
+
+.sound-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+
+    font-size: 26px;
+
+    background: transparent;
+    border: none;
+
+    padding: 0;
+
+    cursor: pointer;
+
+    z-index: 9999;
+
+    transition: transform 0.15s ease, opacity 0.2s ease;
+
+    color: #111;
+}
+
+.sound-btn:hover {
+    transform: scale(1.1);
+}
+
+.sound-btn.off {
+    opacity: 0.35;
 }
 
 </style>
@@ -227,6 +257,10 @@ button.active { background: orange; }
 </script>
 </head>
 <body>
+
+<button id="soundToggle" onclick="toggleSound()" class="sound-btn">
+    🔊
+</button>
 
 <!-- MENU -->
 <div id="modeSelection">
@@ -326,6 +360,12 @@ let timerInterval;
 let startTime;
 let totalNotes = 20;
 
+let soundEnabled = true;
+// mémorisation (optionnel mais recommandé)
+soundEnabled = localStorage.getItem("soundEnabled");
+soundEnabled = soundEnabled === null ? true : soundEnabled === "true";
+let currentAudio = null;
+
 
 // ----------------- Lancement du mode -----------------
 function startMode(selectedMode){
@@ -355,6 +395,7 @@ function startTimer(){
         document.getElementById("timer").innerText = `Temps: ${timeLeft}s`;
 
         if(timeLeft <= 0){
+            stopCurrentNote();
             clearInterval(timerInterval);
 
             saveScore(mode, score).then(saved => {
@@ -474,6 +515,67 @@ function resetButtons(){
         </button>
     `;
 }
+
+function playCurrentNote(note){
+
+    if(!soundEnabled) return;
+
+    if(!window.noteSounds){
+        console.warn("noteSounds pas chargé");
+        return;
+    }
+
+    if(currentAudio){
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+
+    currentAudio = window.noteSounds[note];
+
+    if(!currentAudio) return;
+
+    currentAudio.loop = true;
+    currentAudio.currentTime = 0;
+
+    currentAudio.play().catch(err => {
+        console.log("Lecture bloquée :", err);
+    });
+}
+
+function stopCurrentNote(){
+
+    if(currentAudio){
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+
+    localStorage.setItem("soundEnabled", soundEnabled);
+
+    const btn = document.getElementById("soundToggle");
+
+    if (soundEnabled) {
+        btn.classList.remove("off");
+        btn.innerText = "🔊";
+    } else {
+        btn.classList.add("off");
+        btn.innerText = "🔇";
+
+        stopCurrentNote();
+    }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("soundToggle");
+
+    if (!soundEnabled) {
+        btn.classList.add("off");
+        btn.innerText = "🔇";
+    }
+});
 ===== ./js/mode3.js =====
 
 ===== ./js/mode2.js =====
@@ -523,13 +625,13 @@ game.classList.add("mode2");
     const container = document.querySelector(".buttons");
 
     container.innerHTML = `
-        <div class="row">
+        <div class="mode2-row">
             <button onclick="mode2.answer('DO', this)">Do</button>
             <button onclick="mode2.answer('RE', this)">Ré</button>
             <button onclick="mode2.answer('MI', this)">Mi</button>
         </div>
 
-        <div class="row">
+        <div class="mode2-row">
             <button onclick="mode2.answer('FA', this)">Fa</button>
             <button onclick="mode2.answer('SOL', this)">Sol</button>
             <button onclick="mode2.answer('LA', this)">La</button>
@@ -540,7 +642,8 @@ game.classList.add("mode2");
 
 newNote(){
     const note = this.notes[Math.floor(Math.random() * this.notes.length)];
-    this.current = note;
+    this.current = note; 
+    playCurrentNote(note);
 
     this.locked = false; // reset immédiat
 
@@ -568,14 +671,21 @@ if (img.dataset.src !== newSrc) {
     btn.classList.add("active");
 
     if(ans === base){
+        stopCurrentNote();
         this.score++;
         document.getElementById("result").innerText = "✅";
 
         // 🔥 ultra rapide transition
-        requestAnimationFrame(() => {
-            this.newNote();
-            this.locked = false;
-        });
+        setTimeout(() => {
+
+    // reset visuel
+    document.querySelectorAll(".buttons button")
+        .forEach(b => b.classList.remove("active"));
+
+    this.newNote();
+    this.locked = false;
+
+}, 120);
 
     } else {
         // optionnel: petit feedback erreur
@@ -688,6 +798,7 @@ async function newNoteMode1() {
 
     const keys = Object.keys(notes);
 current = keys[Math.floor(Math.random() * keys.length)];
+playCurrentNote(current);
 
 pressed = []; // ✅ reset les boutons
 
@@ -725,6 +836,7 @@ function checkAnswer() {
     if (JSON.stringify(correct) === JSON.stringify(currentPressed)) {
 
         canAnswer = false;
+        stopCurrentNote();
 
         score++;
         document.getElementById("result").innerText = "✅ Correct !";
@@ -950,5 +1062,17 @@ function formatNoteLabel(noteKey) {
 
    return label;
 }
+
+window.noteSounds = {};
+
+Object.keys(notes).forEach(note => {
+
+    const audio = new Audio(`Audio/${note}.mp3`);
+
+    audio.preload = "auto";
+
+    window.noteSounds[note] = audio;
+});
+
 ===== ./js/mode4.js =====
 
