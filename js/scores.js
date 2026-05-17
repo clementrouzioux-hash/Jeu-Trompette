@@ -62,7 +62,7 @@ async function getTopScores(modeType) {
         .from("trumpet_scores")
         .select("mode, score, created_at")
         .eq("mode", modeType)
-        .order("score", { ascending: isTimeMode }) // fixed = meilleur temps
+        .order("score", { ascending: isTimeMode })
         .limit(10);
 
     if (error) {
@@ -85,22 +85,26 @@ async function showEndScreen(currentScore, currentScoreEntry = null) {
     const myCreatedAt = currentScoreEntry?.created_at;
 
     document.getElementById("scoreTitle").innerText =
-        mode === "fixed"
-            ? "Meilleurs temps pour 20 notes"
-            : mode === "chrono"
-            ? "Meilleur nombre de notes en 1 min"
-            : mode === "mode2"
-            ? "Meilleur score (lecture 30s)"
-            : "Scores";
+    mode === "fixed"
+        ? "Meilleurs temps pour 20 notes"
+        : mode === "chrono"
+        ? "Meilleur nombre de notes en 1 min"
+        : mode === "mode2"
+        ? "Meilleur score (lecture 30s)"
+        : mode === "mode3"
+        ? "Meilleur score (armures 30s)"
+        : "Scores";
 
     document.getElementById("currentScoreValue").innerText =
-        mode === "fixed"
-            ? `${currentScore} sec`
-            : mode === "chrono"
-            ? `${currentScore} notes`
-            : mode === "mode2"
-            ? `${currentScore} notes`
-            : `${currentScore}`;
+    mode === "fixed"
+        ? `${currentScore} sec`
+        : mode === "chrono"
+        ? `${currentScore} notes`
+        : mode === "mode2"
+        ? `${currentScore} notes`
+        : mode === "mode3"
+        ? `${currentScore} armures`
+        : `${currentScore}`;
 
     let html = "";
     let playerRank = -1;
@@ -114,7 +118,11 @@ async function showEndScreen(currentScore, currentScoreEntry = null) {
         topScores.forEach((s, i) => {
 
     const scoreText =
-        mode === "fixed" ? `${s.score} sec` : `${s.score} notes`;
+    mode === "fixed"
+        ? `${s.score} sec`
+        : mode === "mode3"
+        ? `${s.score} armures`
+        : `${s.score} notes`;
 
     const date =
         s.created_at

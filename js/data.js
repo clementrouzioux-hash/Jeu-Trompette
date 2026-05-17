@@ -50,3 +50,51 @@ Object.keys(notes).forEach(note => {
 
     window.noteSounds[note] = audio;
 });
+
+const keySignatures = {
+  "0": [],
+  "1B": ["SI"],
+  "2B": ["SI", "MI"],
+  "3B": ["SI", "MI", "LA"],
+  "4B": ["SI", "MI", "LA", "RE"],
+  "5B": ["SI", "MI", "SOL", "LA", "RE"],
+
+  "1D": ["FA"],
+  "2D": ["FA", "DO"],
+  "3D": ["FA", "DO", "SOL"],
+  "4D": ["FA", "DO", "RE", "SOL"],
+  "5D": ["FA", "DO", "RE", "SOL", "LA"],
+  "6D": ["FA", "DO", "RE", "MI", "SOL", "LA"]
+};
+
+function parseNote(note) {
+    const baseMatch = note.match(/^(DO|RE|MI|FA|SOL|LA|SI)/);
+    const base = baseMatch ? baseMatch[1] : note;
+
+    const octave = note.includes("G") ? "G" :
+                   note.includes("A") ? "A" : "";
+
+    return { base, octave };
+}
+
+function getExpectedNote(note, armure) {
+
+    const alteredNotes = keySignatures[armure] || [];
+
+    const { base, octave } = parseNote(note);
+
+    let resultBase = base;
+
+    if (alteredNotes.includes(base)) {
+
+        if (armure.includes("B")) {
+            resultBase = base + "B";
+        }
+
+        if (armure.includes("D")) {
+            resultBase = base + "D";
+        }
+    }
+
+    return resultBase + octave;
+}

@@ -72,8 +72,10 @@ button.active { background: orange; }
 }
 
 #note img {
-    width: 100%;
-    max-width: 180px;
+    height: 300px;          /* référence fixe = stabilité visuelle */
+    width: auto;            /* conserve les proportions */
+    max-width: 100%;        /* évite de dépasser sur petits écrans */
+    object-fit: contain;    /* sécurité si conteneur contraint */
     border: 1px solid #ccc;
 }
 
@@ -270,7 +272,7 @@ button.active { background: orange; }
 
 <h2>🎵 Lecture</h2>
 <button onclick="startMode('mode2')">Nommer les notes (30s)</button>
-
+<button onclick="startMode('mode3')">Armure → notes modifiées</button>
 </div>
 
 <!-- GAME -->

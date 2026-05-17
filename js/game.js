@@ -21,11 +21,23 @@ let currentAudio = null;
 // ----------------- Lancement du mode -----------------
 function startMode(selectedMode){
     stopCurrentNote();
+    clearInterval(timerInterval);
+
+if(window.mode2?.timerInterval){
+    clearInterval(mode2.timerInterval);
+}
+
+if(window.mode3?.timerInterval){
+    clearInterval(mode3.timerInterval);
+}
+
     document.getElementById("gameContainer").classList.remove("mode2");
     document.getElementById("modeSelection").style.display = "none";
     document.getElementById("gameContainer").style.display = "block";
 
     mode = selectedMode;
+
+    
 
     if(selectedMode === "fixed" || selectedMode === "chrono"){
         resetButtons();
@@ -33,8 +45,12 @@ function startMode(selectedMode){
     }
 
     if(selectedMode === "mode2"){
-        mode2.start(); // ✅ AJOUT IMPORTANT
+        mode2.start();
     }
+
+    if(selectedMode === "mode3"){
+    mode3.start();
+}
 }
 
 
@@ -131,6 +147,10 @@ function replayGame(){
     if(mode === "mode2" && typeof mode2 !== "undefined"){
         mode2.start();
     }
+
+    if(mode === "mode3" && typeof mode3 !== "undefined"){
+    mode3.start();
+}
 }
 
 window.backToMenu = function(){
